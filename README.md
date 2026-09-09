@@ -1,4 +1,4 @@
-[loranks-documentation.md](https://github.com/user-attachments/files/31986811/loranks-documentation.md)# 🇧🇷 Português
+# 🇧🇷 Português
 
 Loranks é um sistema de gerenciamento de estoque. Permite cadastrar produtos, registrar movimentações de compra e venda, e acompanhar o desempenho do estoque com alertas de quantidade mínima e máxima. Conta com controle de privilégios entre administrador e funcionário, exportação da lista de produtos em CSV, e edição/exclusão de dados cadastrados.
 
@@ -34,7 +34,7 @@ Este sistema foi desenvolvido com base neste projeto netBeans  https://github.co
 
 
 
-
+# 🇺🇸 English
 
  Loranks is an inventory management system. It allows you to register products, record purchase and sale movements, and track inventory performance with minimum and maximum quantity alerts. It features privilege control between administrator and employee, export of the product list to CSV, and editing/deleting of registered data.
 
