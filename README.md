@@ -3,17 +3,17 @@
 Loranks é um sistema de gerenciamento de estoque. Permite cadastrar produtos, registrar movimentações de compra e venda, e acompanhar o desempenho do estoque com alertas de quantidade mínima e máxima. Conta com controle de privilégios entre administrador e funcionário, exportação da lista de produtos em CSV, e edição/exclusão de dados cadastrados.
 
 # TECNOLOGIAS UTILIZADAS
-  
-  • Java
-  • Spring Boot
-  • MySQL
-  • JavaScript
-  • HTML
-  • CSS
-  • Maven
-  • Claude
-  • Gemini
-  • Figma
+   
+    • Java
+    • Spring Boot
+    • MySQL
+    • JavaScript
+    • HTML
+    • CSS
+    • Maven
+    • Claude
+    • Gemini
+    • Figma
 
   # FUNCIONALIDADES
   • Cadastro de produtos no estoque
