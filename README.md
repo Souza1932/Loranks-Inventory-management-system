@@ -16,16 +16,16 @@ Loranks é um sistema de gerenciamento de estoque. Permite cadastrar produtos, r
     • Figma
 
   # FUNCIONALIDADES
-  • Cadastro de produtos no estoque
-  • Planilha
-  • Exportação da lista de produtos em CSV
-  • Função para atualizar estoque
+ 
+    • Cadastro de produtos no estoque
+    • Planilha
+    • Exportação da lista de produtos em CSV
+    • Função para atualizar estoque
 
 
  # DOCUMENTAÇÃO
-# Loranks — Documentação do Sistema
 
- [loranks-documentacao.md](https://github.com/user-attachments/files/31986605/loranks-documentacao.md)
+  [loranks-documentacao.md](https://github.com/user-attachments/files/31986605/loranks-documentacao.md)
 
 
 # SOBRE O DESENVOLVIMENTO 
@@ -40,25 +40,25 @@ Este sistema foi desenvolvido com base neste projeto netBeans  https://github.co
 
 # TECHNOLOGIES USED
 
- • Java
- • Spring Boot
- • MySQL
- • JavaScript
- • HTML
- • CSS
- • Maven
- • Claude
- • Gemini
- • Figma
+    • Java
+    • Spring Boot
+    • MySQL
+    • JavaScript
+    • HTML
+    • CSS
+    • Maven
+    • Claude
+    • Gemini
+    • Figma
 
  # FEATURES
- • Product registration in inventory
- • Spreadsheet
- • Export of the product list to CSV
- • Inventory update function
+ 
+    • Product registration in inventory
+    • Spreadsheet
+    • Export of the product list to CSV
+    • Inventory update function
 
  # DOCUMENTATION
-# Loranks — System Documentation
 
 [loranks-documentation.md](https://github.com/user-attachments/files/31986818/loranks-documentation.md)
 
