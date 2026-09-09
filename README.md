@@ -22,8 +22,20 @@ Loranks é um sistema de gerenciamento de estoque. Permite cadastrar produtos, r
     • Exportação da lista de produtos em CSV
     • Função para atualizar estoque
 
+ # COMANDOS DE TERMINAL
 
- # DOCUMENTAÇÃO
+    • cd ~/Downloads ou cd ~/Loranks-main
+    • unzip Loranks-main.zip -d ~/
+    • ./mvnw clean spring-boot:run
+
+ [Comandos.zip](https://github.com/user-attachments/files/31989079/Comandos.zip)
+
+ # CONFIGURAÇÃO DO PROPERTIES
+
+Quando inserir a senha do banco de dados não deixe espaço entre `DB_PASSWORD:`: e senha do banco, o mesmo para `SENHA_PRIVILEGIOS:`
+Insira tudo junto.
+
+# DOCUMENTAÇÃO
 
   [loranks-documentacao.md](https://github.com/user-attachments/files/31986605/loranks-documentacao.md)
 
@@ -57,6 +69,20 @@ Este sistema foi desenvolvido com base neste projeto netBeans  https://github.co
     • Spreadsheet
     • Export of the product list to CSV
     • Inventory update function
+
+ # COMANDOS DE TERMINAL
+
+    • cd ~/Downloads ou cd ~/Loranks-main
+    • unzip Loranks-main.zip -d ~/
+    • ./mvnw clean spring-boot:run
+
+ [Comandos.zip](https://github.com/user-attachments/files/31989079/Comandos.zip)
+    
+
+# PROPERTIES CONFIGURATION
+When entering the database password, do not leave a space between `DB_PASSWORD:` and the password; do the same for `SENHA_PRIVILEGIOS:`.
+Enter it all as a single string.
+
 
  # DOCUMENTATION
 
