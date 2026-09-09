@@ -1,0 +1,162 @@
+/*
+  Estilos exclusivos das telas de autenticacao (login e criar conta).
+  Reaproveita 100% das variaveis de :root do estilo.css - nenhuma cor
+  nova foi inventada aqui. O roxo-magenta da barra lateral
+  (--cor-barra-lateral-acento) e o mesmo tom do login original do
+  sistema desktop, entao ele vira o fundo do cartao aqui.
+*/
+
+body.pagina-auth {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background: var(--cor-barra-lateral-fundo);
+}
+
+.cartao-auth {
+  width: 100%;
+  max-width: 360px;
+  background: var(--cor-barra-lateral-acento);
+  border-radius: 16px;
+  padding: 40px 32px;
+}
+
+.cartao-auth h1 {
+  font-family: var(--fonte-titulo);
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #ffffff;
+  margin-bottom: 4px;
+}
+
+.cartao-auth__subtitulo {
+  font-family: var(--fonte-corpo);
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--cor-barra-lateral-texto-item);
+  margin-bottom: 28px;
+}
+
+.cartao-auth__instrucao {
+  font-family: var(--fonte-corpo);
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--cor-barra-lateral-texto-item);
+  margin: -12px 0 22px;
+  line-height: 1.4;
+}
+
+.cartao-auth label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-family: var(--fonte-corpo);
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--cor-barra-lateral-texto-item);
+  margin-bottom: 18px;
+}
+
+.cartao-auth input {
+  font-family: var(--fonte-corpo);
+  font-weight: 500;
+  font-size: 0.95rem;
+  padding: 11px 12px;
+  border-radius: 8px;
+  border: none;
+  background: #ffffff;
+  color: var(--cor-texto-principal);
+}
+
+.cartao-auth input:focus {
+  outline: 2px solid var(--cor-barra-lateral-texto-hover);
+  outline-offset: 1px;
+}
+
+.cartao-auth__esqueci {
+  display: inline-block;
+  margin: -8px 0 22px;
+  font-family: var(--fonte-corpo);
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: var(--cor-barra-lateral-texto-item);
+  text-decoration: underline;
+}
+
+.cartao-auth__esqueci:hover {
+  color: #ffffff;
+}
+
+.botao-auth {
+  display: block;
+  width: 100%;
+  padding: 12px 16px;
+  border-radius: 8px;
+  font-family: var(--fonte-corpo);
+  font-weight: 700;
+  font-size: 0.95rem;
+  text-align: center;
+  cursor: pointer;
+  transition: filter 0.15s ease;
+}
+
+.botao-auth:hover {
+  filter: brightness(0.96);
+}
+
+.botao-auth:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.botao-auth--primario {
+  border: none;
+  background: #ffffff;
+  color: var(--cor-barra-lateral-acento);
+}
+
+.botao-auth--secundario {
+  margin-top: 12px;
+  background: transparent;
+  border: 1px solid var(--cor-barra-lateral-texto-item);
+  color: #ffffff;
+  text-decoration: none;
+}
+
+.cartao-auth__mensagem {
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-family: var(--fonte-corpo);
+  font-size: 0.85rem;
+  margin-bottom: 18px;
+}
+
+.cartao-auth__mensagem--erro {
+  background: rgba(0, 0, 0, 0.18);
+  color: #ffd7dc;
+}
+
+.cartao-auth__mensagem--sucesso {
+  background: rgba(0, 0, 0, 0.18);
+  color: #d8f7e3;
+}
+
+/*
+  Mensagens de erro/sucesso preenchidas via JavaScript (ex.:
+  esqueci-senha.html) ficam escondidas por padrao e só aparecem quando o
+  script adiciona --visivel. Isso e diferente das mensagens de login.html,
+  que sao renderizadas pelo servidor via th:if e por isso nao precisam
+  desse estado inicial oculto - por isso o display:none abaixo e restrito
+  aos ids especificos, e nao aplicado a classe .cartao-auth__mensagem.
+*/
+#mensagem-erro,
+#mensagem-sucesso {
+  display: none;
+}
+
+.cartao-auth__mensagem--visivel {
+  display: block;
+}

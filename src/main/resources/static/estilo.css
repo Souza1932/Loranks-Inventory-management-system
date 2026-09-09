@@ -1,0 +1,929 @@
+:root {
+  --cor-barra-lateral-fundo: #1c1b1e;
+  --cor-barra-lateral-acento: #a13c8a;
+  --cor-barra-lateral-texto: #d8d3d9;
+  --cor-barra-lateral-texto-item: #eddce8;
+  --cor-barra-lateral-texto-hover: #ffffff;
+  --cor-barra-lateral-borda: #000000;
+  --cor-fundo-conteudo: #f3eef2;
+  --cor-cartao: #ffffff;
+  --cor-texto-principal: #2a1a26;
+  --cor-texto-secundario: #7c6b76;
+  --cor-borda: #e7dde3;
+
+  --cor-situacao-baixo: #d69a1f;
+  --cor-situacao-esgotado: #c23c4d;
+
+  /* Cores do modal de cadastro — inspiradas na tela de referência
+     (caixa verde-escura com campos brancos). */
+  --cor-modal-cadastro-fundo: #003333;
+  --cor-modal-cadastro-texto: #ffffff;
+  --cor-modal-cadastro-campo-fundo: #ffffff;
+  --cor-modal-cadastro-campo-texto: #000000;
+  --cor-modal-cadastro-erro: #ffb4bd;
+
+  --fonte-titulo: "Space Grotesk", sans-serif;
+  --fonte-corpo: "Inter", sans-serif;
+  --fonte-dado: "JetBrains Mono", monospace;
+
+  /* Altura máxima compartilhada pelas listas roláveis do painel
+     (legenda de distribuição e produtos críticos), mantendo os
+     cards com altura consistente entre si. */
+  --altura-lista-scroll: 340px;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: var(--fonte-corpo);
+  color: var(--cor-texto-principal);
+  background: var(--cor-fundo-conteudo);
+  display: flex;
+  min-height: 100vh;
+}
+
+/* ===== Barra lateral ===== */
+.barra-lateral {
+  width: 176px;
+  flex-shrink: 0;
+  background: var(--cor-barra-lateral-fundo);
+  border-right: 1px solid var(--cor-barra-lateral-borda);
+  color: var(--cor-barra-lateral-texto);
+  display: flex;
+  flex-direction: column;
+  padding: 28px 0;
+}
+
+/* Espaço reservado no topo da barra lateral para uma futura logo/marca. */
+.barra-lateral__marca {
+  min-height: 20px;
+  margin-bottom: 36px;
+}
+
+.lista-navegacao {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+}
+
+.item-navegacao {
+  /* Reset de <button>: remove aparência nativa (borda, fundo, fonte do
+     sistema) para herdar o visual que antes vinha do <a>. */
+  appearance: none;
+  background: none;
+  border: none;
+  border-left: 3px solid transparent;
+  font-family: inherit;
+  cursor: pointer;
+  width: 100%;
+  text-align: left;
+
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 28px;
+  font-size: 0.92rem;
+  font-weight: 500;
+  color: var(--cor-barra-lateral-texto-item);
+  text-decoration: none;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.item-navegacao:hover {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.item-navegacao--ativo {
+  background: rgba(161, 60, 138, 0.32);
+  border-left-color: var(--cor-barra-lateral-acento);
+  color: var(--cor-barra-lateral-texto-hover);
+  font-weight: 600;
+}
+
+.item-navegacao--ativo .item-navegacao__icone {
+  opacity: 1;
+  background: var(--cor-barra-lateral-acento);
+}
+
+.item-navegacao__icone {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.85;
+}
+
+.item-navegacao__icone svg {
+  width: 100%;
+  height: 100%;
+}
+
+.barra-lateral__sair {
+  /* Reset de <button>: remove aparência nativa. */
+  appearance: none;
+  font-family: inherit;
+  cursor: pointer;
+  text-align: center;
+
+  /* Caixa visível: deixa claro que é clicável, à parte do resto da navegação. */
+  margin: auto 20px 28px;
+  padding: 12px 16px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.04);
+
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: var(--cor-barra-lateral-texto-item);
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+
+.barra-lateral__sair:hover {
+  background: rgba(255, 255, 255, 0.09);
+  border-color: rgba(255, 255, 255, 0.3);
+  color: var(--cor-barra-lateral-texto-hover);
+}
+
+/* ===== Área de conteúdo ===== */
+.area-conteudo {
+  flex: 1;
+  padding: 40px 48px;
+}
+
+.cabecalho-pagina {
+  margin-bottom: 32px;
+}
+
+.cabecalho-pagina h1 {
+  font-family: var(--fonte-titulo);
+  font-size: 1.6rem;
+  font-weight: 600;
+}
+
+.cabecalho-pagina p {
+  color: var(--cor-texto-secundario);
+  font-size: 0.9rem;
+  margin-top: 4px;
+}
+
+.grade-painel {
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: 24px;
+  align-items: start;
+}
+
+/* ===== Indicadores resumidos ===== */
+.grade-indicadores {
+  display: grid;
+  /* Uma coluna por indicador (--total-indicadores, definida em JS ao
+     renderizar) - a lista varia (4 pra quem não é admin, até 6 pra quem
+     é), mas os cards sempre ficam lado a lado numa única fileira, nunca
+     quebrando pra uma segunda linha. Fallback pra 4 caso a variável
+     ainda não tenha sido definida (primeiro paint, antes do JS rodar). */
+  grid-template-columns: repeat(var(--total-indicadores, 4), 1fr);
+  gap: 20px;
+  margin-bottom: 24px;
+}
+
+.indicador-estoque {
+  background: var(--cor-cartao);
+  border: 1px solid var(--cor-borda);
+  border-radius: 14px;
+  padding: 20px 22px;
+  border-top: 3px solid var(--indicador-cor, var(--cor-barra-lateral-acento));
+}
+
+.indicador-estoque__rotulo {
+  font-size: 0.78rem;
+  color: var(--cor-texto-secundario);
+  margin-bottom: 8px;
+}
+
+.indicador-estoque__valor {
+  font-family: var(--fonte-dado);
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.cartao {
+  background: var(--cor-cartao);
+  border: 1px solid var(--cor-borda);
+  border-radius: 14px;
+  padding: 28px;
+}
+
+.cartao__titulo {
+  font-family: var(--fonte-titulo);
+  font-size: 1.05rem;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.cartao__subtitulo {
+  font-size: 0.82rem;
+  color: var(--cor-texto-secundario);
+  margin-bottom: 20px;
+}
+
+/* ===== Gráfico de distribuição de estoque por produto ===== */
+.grafico-distribuicao-estoque {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+  flex-wrap: wrap;
+}
+
+.grafico-distribuicao-estoque__pizza {
+  display: block;
+  width: 220px;
+  height: 220px;
+  flex-shrink: 0;
+}
+
+.legenda-distribuicao-estoque {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  flex: 1;
+  min-width: 200px;
+  /* A lista de produtos é ilimitada (não sabemos quantos serão
+     cadastrados) — todos os itens são renderizados, sem truncar dados.
+     Esta rolagem é só para o card não crescer indefinidamente na tela
+     quando o catálogo for grande; nenhum produto fica escondido. */
+  max-height: 340px;
+  overflow-y: auto;
+  padding-right: 6px;
+}
+
+.legenda-distribuicao-estoque__vazio {
+  color: var(--cor-texto-secundario);
+  font-size: 0.85rem;
+}
+
+.legenda-distribuicao-estoque__item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.85rem;
+}
+
+.legenda-distribuicao-estoque__marcador {
+  width: 11px;
+  height: 11px;
+  border-radius: 3px;
+  flex-shrink: 0;
+}
+
+.legenda-distribuicao-estoque__nome {
+  flex: 1;
+  color: var(--cor-texto-principal);
+}
+
+.legenda-distribuicao-estoque__quantidade {
+  color: var(--cor-texto-secundario);
+  font-size: 0.78rem;
+}
+
+.legenda-distribuicao-estoque__percentual {
+  font-family: var(--fonte-dado);
+  font-weight: 600;
+  min-width: 42px;
+  text-align: right;
+}
+
+/* ===== Lista de produtos críticos ===== */
+.lista-produtos-criticos {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  /* Mesmo raciocínio da legenda: lista sem limite de itens, rolagem só
+     para manter o card com altura razoável — nenhum produto é ocultado. */
+  max-height: 340px;
+  overflow-y: auto;
+  padding-right: 6px;
+}
+
+.lista-produtos-criticos__vazio {
+  color: var(--cor-texto-secundario);
+  font-size: 0.85rem;
+}
+
+.produto-critico {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--cor-borda);
+}
+
+.produto-critico:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.produto-critico__nome {
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.produto-critico__unidade {
+  font-size: 0.78rem;
+  color: var(--cor-texto-secundario);
+}
+
+.selo-situacao {
+  font-family: var(--fonte-dado);
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 999px;
+}
+
+.selo-situacao--baixo {
+  background: rgba(214, 154, 31, 0.14);
+  color: var(--cor-situacao-baixo);
+}
+
+.selo-situacao--esgotado {
+  background: rgba(194, 60, 77, 0.14);
+  color: var(--cor-situacao-esgotado);
+}
+
+/* ===== Modal de cadastro de produto ===== */
+.sobreposicao-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  z-index: 100;
+}
+
+.sobreposicao-modal[hidden] {
+  display: none;
+}
+
+.modal-cadastro {
+  position: relative;
+  width: 100%;
+  max-width: 720px;
+  max-height: 90vh;
+  overflow-y: auto;
+  background: var(--cor-modal-cadastro-fundo);
+  color: var(--cor-modal-cadastro-texto);
+  border-radius: 14px;
+  padding: 32px 36px;
+}
+
+.modal-cadastro__fechar {
+  position: absolute;
+  top: 16px;
+  right: 20px;
+  appearance: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1.6rem;
+  line-height: 1;
+  color: var(--cor-modal-cadastro-texto);
+  font-family: var(--fonte-titulo);
+}
+
+.modal-cadastro__titulo {
+  font-family: var(--fonte-titulo);
+  font-size: 1.4rem;
+  font-weight: 700;
+  margin-bottom: 24px;
+  padding-right: 40px;
+}
+
+.modal-cadastro__grade {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px 24px;
+}
+
+.campo-formulario {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-family: var(--fonte-corpo);
+  font-weight: 600;
+  font-size: 0.85rem;
+}
+
+.campo-formulario--largo {
+  grid-column: 1 / -1;
+}
+
+.campo-formulario input,
+.campo-formulario select {
+  font-family: var(--fonte-corpo);
+  font-weight: 500;
+  font-size: 0.95rem;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: none;
+  background: var(--cor-modal-cadastro-campo-fundo);
+  color: var(--cor-modal-cadastro-campo-texto);
+}
+
+.campo-formulario input:focus,
+.campo-formulario select:focus {
+  outline: 3px solid rgba(255, 255, 255, 0.5);
+  outline-offset: 1px;
+}
+
+.campo-formulario__dica {
+  font-weight: 400;
+  font-size: 0.72rem;
+  color: rgba(255, 255, 255, 0.65);
+}
+
+.modal-cadastro__mensagem {
+  margin-top: 18px;
+  padding: 10px 14px;
+  border-radius: 8px;
+  background: rgba(255, 180, 189, 0.16);
+  color: var(--cor-modal-cadastro-erro);
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.modal-cadastro__mensagem[hidden] {
+  display: none;
+}
+
+.modal-cadastro__mensagem--sucesso {
+  background: rgba(148, 226, 178, 0.18);
+  color: #d8f7e3;
+}
+
+.modal-cadastro__acoes {
+  margin-top: 26px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+/* Usado só no modal de Privilégios, que tem dois botões (excluir conta à
+   esquerda, confirmar à direita) - modificador em vez de mudar
+   .modal-cadastro__acoes direto, pra não afetar os outros modais
+   (cadastro de produto etc.) que só têm um botão e continuam com
+   flex-end normalmente. */
+.modal-cadastro__acoes--entre {
+  justify-content: space-between;
+}
+
+.modal-cadastro__salvar {
+  appearance: none;
+  border: none;
+  cursor: pointer;
+  background: #ffffff;
+  color: var(--cor-modal-cadastro-fundo);
+  font-family: var(--fonte-corpo);
+  font-weight: 700;
+  font-size: 0.95rem;
+  letter-spacing: 0.04em;
+  padding: 12px 32px;
+  border-radius: 8px;
+  transition: opacity 0.15s ease;
+}
+
+.modal-cadastro__salvar:hover {
+  opacity: 0.88;
+}
+
+/* Ação destrutiva (excluir conta) - contorno vermelho em vez de
+   preenchido, pra não competir visualmente com o botão principal
+   (CONFIRMAR) nem parecer o caminho "recomendado" do formulário. */
+.modal-cadastro__excluir {
+  appearance: none;
+  cursor: pointer;
+  background: transparent;
+  border: 1px solid var(--cor-modal-cadastro-erro);
+  color: var(--cor-modal-cadastro-erro);
+  font-family: var(--fonte-corpo);
+  font-weight: 600;
+  font-size: 0.9rem;
+  padding: 11px 20px;
+  border-radius: 8px;
+  transition: background 0.15s ease;
+}
+
+.modal-cadastro__excluir:hover {
+  background: rgba(255, 180, 189, 0.15);
+}
+
+@media (max-width: 640px) {
+  .modal-cadastro__grade {
+    grid-template-columns: 1fr;
+  }
+  .campo-formulario--largo {
+    grid-column: auto;
+  }
+}
+
+/* ===== Planilha de produtos ===== */
+.painel-planilha {
+  position: relative;
+  width: 100%;
+  max-width: 1180px;
+  max-height: 88vh;
+  background: var(--cor-cartao);
+  color: var(--cor-texto-principal);
+  border-radius: 14px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.painel-planilha__cabecalho {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding: 24px 28px 16px;
+  border-bottom: 1px solid var(--cor-borda);
+}
+
+.painel-planilha__titulo {
+  font-family: var(--fonte-titulo);
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+
+.painel-planilha__contagem {
+  font-size: 0.82rem;
+  color: var(--cor-texto-secundario);
+  margin-top: 2px;
+}
+
+.painel-planilha__botoes-cabecalho {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.painel-planilha__fechar {
+  appearance: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1.6rem;
+  line-height: 1;
+  color: var(--cor-texto-secundario);
+  font-family: var(--fonte-titulo);
+}
+
+.painel-planilha__fechar:hover {
+  color: var(--cor-texto-principal);
+}
+
+.painel-planilha__tela-cheia {
+  appearance: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1.2rem;
+  line-height: 1;
+  color: var(--cor-texto-secundario);
+}
+
+.painel-planilha__tela-cheia:hover {
+  color: var(--cor-barra-lateral-acento);
+}
+
+/* Estado de tela cheia: alternado via JS (TabelaPlanilhaProdutos._alternarTelaCheia).
+   Zera o padding da sobreposição e o max-width/border-radius do painel,
+   pra ele ocupar o viewport inteiro em vez do card centralizado padrão. */
+.sobreposicao-modal--tela-cheia {
+  padding: 0;
+}
+
+.painel-planilha--tela-cheia {
+  max-width: none;
+  width: 100%;
+  height: 100%;
+  max-height: none;
+  border-radius: 0;
+}
+
+.painel-planilha__barra {
+  padding: 14px 28px;
+  border-bottom: 1px solid var(--cor-borda);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.painel-planilha__busca {
+  width: 100%;
+  max-width: 340px;
+  font-family: var(--fonte-corpo);
+  font-size: 0.9rem;
+  padding: 9px 14px;
+  border-radius: 8px;
+  border: 1px solid var(--cor-borda);
+  background: var(--cor-fundo-conteudo);
+  color: var(--cor-texto-principal);
+}
+
+.painel-planilha__busca:focus {
+  outline: 2px solid var(--cor-barra-lateral-acento);
+  outline-offset: 1px;
+}
+
+.botao-secundario {
+  font-family: var(--fonte-corpo);
+  font-size: 0.85rem;
+  font-weight: 600;
+  padding: 9px 16px;
+  border-radius: 8px;
+  border: 1px solid var(--cor-barra-lateral-acento);
+  background: transparent;
+  color: var(--cor-barra-lateral-acento);
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.botao-secundario:hover:not(:disabled) {
+  background: rgba(161, 60, 138, 0.1);
+}
+
+.botao-secundario:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.painel-planilha__paginacao {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 14px 28px;
+  border-top: 1px solid var(--cor-borda);
+  font-family: var(--fonte-corpo);
+  font-size: 0.85rem;
+  color: var(--cor-texto-secundario);
+}
+
+.painel-planilha__tabela-scroll {
+  overflow: auto;
+  flex: 1;
+}
+
+/* Visual de planilha "de verdade": grade fechada, cabeçalho fixo,
+   linhas zebradas e colunas numéricas alinhadas/monoespaçadas — como
+   num Excel/LibreOffice Calc, só que com cabeçalhos reais em vez de
+   letras de coluna (A, B, C...), já que aqui o nome do campo importa
+   mais que a posição da coluna. */
+.tabela-planilha {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+  white-space: nowrap;
+}
+
+.tabela-planilha th,
+.tabela-planilha td {
+  border: 1px solid var(--cor-borda);
+  padding: 9px 14px;
+  text-align: left;
+}
+
+.tabela-planilha thead th {
+  position: sticky;
+  top: 0;
+  background: var(--cor-fundo-conteudo);
+  font-family: var(--fonte-titulo);
+  font-weight: 600;
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  user-select: none;
+  z-index: 1;
+}
+
+.tabela-planilha thead th:hover {
+  background: var(--cor-borda);
+}
+
+.tabela-planilha thead th[aria-sort="ascending"],
+.tabela-planilha thead th[aria-sort="descending"] {
+  color: var(--cor-barra-lateral-acento);
+}
+
+.tabela-planilha tbody tr:nth-child(even) {
+  background: var(--cor-fundo-conteudo);
+}
+
+.tabela-planilha tbody tr:hover {
+  background: rgba(161, 60, 138, 0.08);
+}
+
+.tabela-planilha td.coluna-numerica {
+  font-family: var(--fonte-dado);
+  text-align: right;
+}
+
+/* Extrato de movimentações (tela de Movimentação) — tabela simples dentro
+   de um cartão, mesma linguagem visual da planilha (grade, zebra) mas sem
+   cabeçalho fixo/ordenável, já que é uma lista curta (histórico de UM
+   produto por vez), não uma base inteira pra navegar. */
+.tabela-historico-movimentacao {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+}
+
+.tabela-historico-movimentacao th,
+.tabela-historico-movimentacao td {
+  border: 1px solid var(--cor-borda);
+  padding: 8px 12px;
+  text-align: left;
+}
+
+.tabela-historico-movimentacao thead th {
+  background: var(--cor-fundo-conteudo);
+  font-family: var(--fonte-titulo);
+  font-weight: 600;
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.tabela-historico-movimentacao tbody tr:nth-child(even) {
+  background: var(--cor-fundo-conteudo);
+}
+
+.tabela-historico-movimentacao td.coluna-numerica {
+  font-family: var(--fonte-dado);
+  text-align: right;
+}
+
+.tabela-historico-movimentacao td.tabela-historico-movimentacao__vazio {
+  text-align: center;
+  color: var(--cor-texto-secundario);
+  font-style: italic;
+}
+
+.selo-status-estoque {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--selo-cor, var(--cor-texto-secundario));
+  background: color-mix(in srgb, var(--selo-cor, var(--cor-texto-secundario)) 14%, transparent);
+}
+
+.tabela-planilha__acoes {
+  white-space: nowrap;
+  text-align: right;
+}
+
+.tabela-planilha__botao-acao {
+  border: 1px solid var(--cor-borda, rgba(0, 0, 0, 0.15));
+  background: transparent;
+  border-radius: 6px;
+  padding: 4px 10px;
+  font-size: 0.8rem;
+  font-family: var(--fonte-corpo);
+  cursor: pointer;
+  margin-left: 6px;
+}
+
+.tabela-planilha__botao-acao:hover {
+  border-color: var(--cor-barra-lateral-acento);
+  color: var(--cor-barra-lateral-acento);
+}
+
+.tabela-planilha__botao-acao--excluir:hover {
+  border-color: var(--cor-situacao-esgotado);
+  color: var(--cor-situacao-esgotado);
+}
+
+.tabela-planilha__vazio td {
+  text-align: center;
+  color: var(--cor-texto-secundario);
+  padding: 32px 14px;
+  font-family: var(--fonte-corpo);
+  white-space: normal;
+}
+
+/* ============================================================
+   Página de Perfil (acréscimo)
+   ------------------------------------------------------------
+   Só ADICIONA regras novas: nada acima foi alterado. As páginas
+   internas de `area-conteudo` (Painel e Perfil) são alternadas por
+   perfil.js via o atributo `hidden`, então `.pagina[hidden]` precisa
+   continuar escondida mesmo com `display` definido.
+
+   Os campos de formulário herdam `.campo-formulario` do modal de
+   cadastro, que foi pensado para fundo escuro (campo branco sem
+   borda, dica em branco translúcido). Dentro do cartão claro do
+   Perfil isso ficaria ilegível, por isso as regras abaixo reajustam
+   APENAS os campos descendentes de `.cartao--perfil`.
+   ============================================================ */
+.pagina[hidden] {
+  display: none;
+}
+
+/* Perfil tem um cartão único: ocupa toda a largura da grade. */
+.cartao--perfil {
+  grid-column: 1 / -1;
+  max-width: 720px;
+  border-top: 3px solid var(--cor-barra-lateral-acento);
+}
+
+.cartao--perfil__grade {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px 24px;
+  margin-top: 20px;
+}
+
+.cartao--perfil .campo-formulario {
+  color: var(--cor-texto-principal);
+}
+
+.cartao--perfil .campo-formulario input,
+.cartao--perfil .campo-formulario select {
+  border: 1px solid var(--cor-borda);
+  background: var(--cor-cartao);
+  color: var(--cor-texto-principal);
+}
+
+.cartao--perfil .campo-formulario input:focus,
+.cartao--perfil .campo-formulario select:focus {
+  outline: 2px solid var(--cor-barra-lateral-acento);
+  outline-offset: 1px;
+}
+
+.cartao--perfil .campo-formulario__dica {
+  color: var(--cor-texto-secundario);
+}
+
+.cartao--perfil__mensagem {
+  margin-top: 18px;
+  padding: 10px 14px;
+  border-radius: 8px;
+  background: rgba(194, 60, 77, 0.1);
+  color: var(--cor-situacao-esgotado);
+  font-size: 0.85rem;
+}
+
+.cartao--perfil__mensagem--sucesso {
+  background: rgba(161, 60, 138, 0.1);
+  color: var(--cor-barra-lateral-acento);
+}
+
+.cartao--perfil__acoes {
+  margin-top: 24px;
+}
+
+.botao-primario {
+  appearance: none;
+  border: none;
+  cursor: pointer;
+  font-family: var(--fonte-corpo);
+  font-weight: 600;
+  font-size: 0.9rem;
+  padding: 12px 22px;
+  border-radius: 8px;
+  background: var(--cor-barra-lateral-acento);
+  color: #ffffff;
+  transition: filter 0.15s ease;
+}
+
+.botao-primario:hover:not(:disabled) {
+  filter: brightness(1.08);
+}
+
+.botao-primario:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+@media (max-width: 900px) {
+  .cartao--perfil__grade {
+    grid-template-columns: 1fr;
+  }
+
+  /* Abaixo de 900px, forçar N colunas fixas (repeat(var(--total-indicadores)))
+     deixaria cada card espremido demais pra caber a quantia em R$ sem
+     quebrar feio - aqui sim volta a se ajustar sozinha e quebrar linha
+     quando precisar, só nesta largura de tela. */
+  .grade-indicadores {
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  }
+}

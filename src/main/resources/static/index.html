@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!-- Content-Security-Policy: mesma política de dashboard-loranks.html —
+       só scripts da própria origem, sem inline, sem plugins embutidos. -->
+  <meta http-equiv="Content-Security-Policy" content="
+    default-src 'self';
+    script-src 'self';
+    style-src 'self' https://fonts.googleapis.com;
+    font-src https://fonts.gstatic.com;
+    img-src 'self' data:;
+    object-src 'none';
+    base-uri 'self';
+    form-action 'self';
+    frame-ancestors 'self';
+  ">
+  <title>LORANKS · Login</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <div class="rank-bars" aria-hidden="true">
+    <span></span><span></span><span></span><span></span><span></span>
+    <span></span><span></span><span></span><span></span><span></span>
+  </div>
+
+  <main class="login-screen">
+    <div class="login-panel">
+
+      <aside class="login-illustration" aria-hidden="true">
+        <svg viewBox="0 0 240 240" class="illustration-svg" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="120" cy="120" r="108" fill="url(#glow)" />
+          <defs>
+            <radialGradient id="glow" cx="50%" cy="40%" r="65%">
+              <stop offset="0%" stop-color="#ffffff" stop-opacity="0.12" />
+              <stop offset="100%" stop-color="#ffffff" stop-opacity="0" />
+            </radialGradient>
+          </defs>
+
+          <!-- pódio de ranking -->
+          <rect x="55"  y="150" width="34" height="52" rx="6" fill="#e8a33d" />
+          <rect x="103" y="120" width="34" height="82" rx="6" fill="#f4c873" />
+          <rect x="151" y="140" width="34" height="62" rx="6" fill="#e8a33d" opacity="0.85" />
+
+          <!-- estrela no topo do primeiro lugar -->
+          <path
+            d="M120 78 L126 92 L141 93 L129 103 L133 118 L120 109 L107 118 L111 103 L99 93 L114 92 Z"
+            fill="#ffffff"
+          />
+
+          <!-- linha de crescimento -->
+          <polyline
+            points="40,205 70,180 100,190 130,150 160,165 200,110"
+            fill="none"
+            stroke="#ffffff"
+            stroke-width="4"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            opacity="0.85"
+          />
+          <circle cx="200" cy="110" r="6" fill="#ffffff" />
+        </svg>
+        <p class="illustration-caption"></p>
+      </aside>
+
+      <section class="login-card" aria-labelledby="brand-title">
+
+      <header class="login-card__header">
+        <h1 id="brand-title" class="brand">LORANKS</h1>
+        <p class="brand__subtitle">Acesse sua conta para continuar</p>
+      </header>
+
+      <form id="login-form" class="login-form" novalidate autocomplete="off">
+
+        <div id="form-alert" class="form-alert" role="alert" aria-live="assertive" hidden></div>
+
+        <div class="field">
+          <label for="username">Login de usuário</label>
+          <input
+            type="text"
+            id="username"
+            name="username"
+            placeholder="Digite seu usuário"
+            maxlength="40"
+            autocomplete="username"
+            required
+          />
+          <span id="username-error" class="field__error" aria-live="polite"></span>
+        </div>
+
+        <div class="field">
+          <label for="password">Senha</label>
+          <div class="field__password-wrapper">
+            <input
+              type="password"
+              id="password"
+              name="password"
+              placeholder="Digite sua senha"
+              maxlength="64"
+              autocomplete="current-password"
+              required
+            />
+            <button
+              type="button"
+              id="toggle-password"
+              class="toggle-password"
+              aria-label="Mostrar senha"
+              aria-pressed="false"
+            >Mostrar</button>
+          </div>
+          <span id="password-error" class="field__error" aria-live="polite"></span>
+        </div>
+
+        <button type="submit" class="btn-primary" id="submit-btn">Entrar</button>
+
+        <div class="login-form__links">
+          <a href="/esqueci-senha" id="forgot-password">Esqueci a senha</a>
+          <a href="criar-conta.html" id="create-account">Criar conta</a>
+        </div>
+
+      </form>
+      </section>
+
+    </div>
+  </main>
+
+  <script src="autenticacao.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

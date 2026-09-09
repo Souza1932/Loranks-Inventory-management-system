@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Loranks · Recuperar senha</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/estilo.css">
+<link rel="stylesheet" href="/auth.css">
+</head>
+<body class="pagina-auth">
+  <main class="cartao-auth">
+    <h1>Loranks</h1>
+    <p class="cartao-auth__subtitulo">Recuperar senha</p>
+
+    <p id="mensagem-erro" class="cartao-auth__mensagem cartao-auth__mensagem--erro"></p>
+    <p id="mensagem-sucesso" class="cartao-auth__mensagem cartao-auth__mensagem--sucesso"></p>
+
+    <!-- ETAPA 1: informar o usuário para buscar a pergunta de segurança cadastrada. -->
+    <section id="etapa-usuario">
+      <p class="cartao-auth__instrucao">Informe seu usuário. O sistema não usa e-mail: a recuperação é feita pela pergunta de segurança definida no cadastro.</p>
+
+      <form id="form-usuario">
+        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+
+        <label>
+          Usuário
+          <input type="text" id="usuario" name="usuario" autocomplete="username" required autofocus placeholder="Seu login de usuário">
+        </label>
+
+        <button type="submit" class="botao-auth botao-auth--primario" id="botao-buscar">Continuar</button>
+      </form>
+    </section>
+
+    <!-- ETAPA 2: mostrada só depois que a pergunta é encontrada.
+         Dividida em duas partes: primeiro só a resposta (com um botão
+         "Confirmar" que valida no servidor sem mexer na senha); os campos
+         de nova senha só aparecem depois que a resposta é aceita. -->
+    <section id="etapa-resposta" hidden>
+      <p class="cartao-auth__instrucao" id="texto-pergunta"></p>
+
+      <form id="form-resposta">
+        <label>
+          Resposta
+          <input type="text" id="resposta" name="resposta" autocomplete="off" required placeholder="Sua resposta">
+        </label>
+
+        <!-- Só existe ESTE botão enquanto a resposta não foi confirmada.
+             type="button" de proposito: não pode disparar submit do form
+             (isso pularia a validação e cairia direto na troca de senha). -->
+        <button type="button" class="botao-auth botao-auth--primario" id="botao-confirmar-resposta">Confirmar</button>
+
+        <!-- Campos de nova senha: ficam escondidos e desabilitados até a
+             resposta ser confirmada pelo servidor. Reaproveita o mesmo
+             form-resposta porque o valor de "resposta" precisa ir junto
+             no POST final de /redefinir. -->
+        <div id="campos-nova-senha" hidden>
+          <label>
+            Nova senha
+            <input type="password" id="nova-senha" name="nova-senha" autocomplete="new-password" disabled minlength="6" maxlength="64" placeholder="Mínimo de 6 caracteres">
+          </label>
+
+          <label>
+            Confirmar nova senha
+            <input type="password" id="confirmar-senha" name="confirmar-senha" autocomplete="new-password" disabled minlength="6" maxlength="64" placeholder="Repita a nova senha">
+          </label>
+
+          <button type="submit" class="botao-auth botao-auth--primario" id="botao-redefinir">Redefinir senha</button>
+        </div>
+      </form>
+    </section>
+
+    <a class="botao-auth botao-auth--secundario" th:href="@{/login}">Voltar para o login</a>
+  </main>
+
+  <script src="/api.js"></script>
+  <script src="/recuperar-senha.js"></script>
+</body>
+</html>

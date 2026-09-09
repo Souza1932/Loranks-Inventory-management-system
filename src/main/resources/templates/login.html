@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Loranks · Entrar</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/estilo.css">
+<link rel="stylesheet" href="/auth.css">
+</head>
+<body class="pagina-auth">
+  <main class="cartao-auth">
+    <h1>Loranks</h1>
+    <p class="cartao-auth__subtitulo">Painel de Estoque</p>
+
+    <p class="cartao-auth__mensagem cartao-auth__mensagem--erro" th:if="${param.erro}">Usuário ou senha inválidos.</p>
+    <p class="cartao-auth__mensagem cartao-auth__mensagem--sucesso" th:if="${param.criado}">Conta criada com sucesso. Faça login abaixo.</p>
+
+    <form th:action="@{/login}" method="post">
+      <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+
+      <label>
+        Login de usuário
+        <input type="text" name="usuario" autocomplete="username" required autofocus>
+      </label>
+
+      <label>
+        Senha
+        <input type="password" name="senha" autocomplete="current-password" required>
+      </label>
+
+      <a class="cartao-auth__esqueci" th:href="@{/esqueci-senha}">Esqueci a senha</a>
+
+      <button type="submit" class="botao-auth botao-auth--primario">Entrar</button>
+    </form>
+
+    <a class="botao-auth botao-auth--secundario" th:href="@{/criar-conta.html}">Criar conta</a>
+  </main>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

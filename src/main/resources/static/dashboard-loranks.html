@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- Content-Security-Policy: segunda camada de defesa, independente do JS.
+     Mesmo que algum código futuro reintroduza innerHTML por engano, o
+     navegador bloqueia scripts inline e qualquer script de origem não
+     listada aqui. object-src/base-uri restritos fecham vetores clássicos
+     de injeção (plugins embutidos, sequestro de <base>). -->
+<meta http-equiv="Content-Security-Policy" content="
+  default-src 'self';
+  script-src 'self';
+  style-src 'self' https://fonts.googleapis.com;
+  font-src https://fonts.gstatic.com;
+  img-src 'self' data:;
+  object-src 'none';
+  base-uri 'self';
+  form-action 'self';
+  frame-ancestors 'self';
+">
+<title data-i18n="documento.titulo">Loranks · Painel de Estoque</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="estilo.css">
+</head>
+<body>
+
+  <aside class="barra-lateral">
+    <!-- Espaço reservado para a logo/marca do sistema. -->
+    <div class="barra-lateral__marca"></div>
+
+    <ul class="lista-navegacao">
+      <li><button type="button" class="item-navegacao" id="botaoAbrirTelaInicial">
+        <span class="item-navegacao__icone" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 11.5 12 4l8 7.5"/>
+            <path d="M6 10v9a1 1 0 0 0 1 1h3v-6h4v6h3a1 1 0 0 0 1-1v-9"/>
+          </svg>
+        </span> <span data-i18n="nav.telaInicial">Tela inicial</span>
+      </button></li>
+      <li><button type="button" class="item-navegacao" id="botaoAbrirCadastro">
+        <span class="item-navegacao__icone" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 8 12 3l9 5-9 5-9-5Z"/>
+            <path d="M3 8v9l9 5 9-5V8"/>
+            <path d="M12 13v9"/>
+          </svg>
+        </span> <span data-i18n="nav.cadastro">Cadastro</span>
+      </button></li>
+      <li><button type="button" class="item-navegacao" id="botaoAbrirMovimentacao">
+        <span class="item-navegacao__icone" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 6h16M4 12h10M4 18h16"/>
+            <path d="M17 9l3 3-3 3"/>
+          </svg>
+        </span> <span data-i18n="nav.movimentacao">Movimentação</span>
+      </button></li>
+      <li><button type="button" class="item-navegacao" id="botaoAbrirPlanilha">
+        <span class="item-navegacao__icone" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="4" width="18" height="16" rx="1.5"/>
+            <path d="M3 9h18M3 14h18M9 4v16M15 4v16"/>
+          </svg>
+        </span> <span data-i18n="nav.planilha">Planilha</span>
+      </button></li>
+      <li><button type="button" class="item-navegacao" id="botaoAbrirPerfil">
+        <span class="item-navegacao__icone" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="8" r="3.5"/>
+            <path d="M4.5 20c1.5-4 4.5-6 7.5-6s6 2 7.5 6"/>
+          </svg>
+        </span> <span data-i18n="nav.perfil">Perfil</span>
+      </button></li>
+    </ul>
+
+    <button type="button" class="barra-lateral__sair" id="botaoSair" data-i18n="nav.sair">SAIR</button>
+  </aside>
+
+  <main class="area-conteudo">
+    <section class="pagina" id="paginaPainel">
+      <header class="cabecalho-pagina">
+        <h1 data-i18n="painel.titulo">Painel de Estoque</h1>
+        <p data-i18n="painel.subtitulo">Visão geral da situação atual dos produtos cadastrados</p>
+      </header>
+
+      <div class="grade-indicadores" id="gradeIndicadoresEstoque"></div>
+
+      <div class="grade-painel">
+
+        <section class="cartao">
+          <h2 class="cartao__titulo" data-i18n="painel.grafico.titulo">Distribuição do Estoque por Produto</h2>
+          <p class="cartao__subtitulo" data-i18n="painel.grafico.subtitulo">Percentual que cada produto ocupa da quantidade total armazenada</p>
+
+          <div class="grafico-distribuicao-estoque">
+            <canvas class="grafico-distribuicao-estoque__pizza" id="pizzaDistribuicaoEstoque" width="220" height="220" data-i18n="painel.grafico.semSuporteCanvas">
+              Seu navegador não suporta a exibição de gráficos em canvas.
+            </canvas>
+            <div class="legenda-distribuicao-estoque" id="legendaDistribuicaoEstoque"></div>
+          </div>
+        </section>
+
+        <section class="cartao">
+          <h2 class="cartao__titulo" data-i18n="painel.criticos.titulo">Produtos que Exigem Atenção</h2>
+          <p class="cartao__subtitulo" data-i18n="painel.criticos.subtitulo">Abaixo do estoque mínimo cadastrado</p>
+
+          <ul class="lista-produtos-criticos" id="listaProdutosCriticos"></ul>
+        </section>
+
+      </div>
+    </section>
+
+    <section class="pagina" id="paginaPerfil" hidden>
+      <header class="cabecalho-pagina">
+        <h1 data-i18n="perfil.tituloPagina">Perfil</h1>
+        <p data-i18n="perfil.subtitulo">Atualize os dados de acesso e o idioma da sua conta</p>
+      </header>
+
+      <div class="grade-painel">
+        <section class="cartao cartao--perfil">
+          <h2 class="cartao__titulo" data-i18n="perfil.dadosDaConta">Dados da conta</h2>
+
+          <form id="formularioPerfil" novalidate>
+            <div class="cartao--perfil__grade">
+              <label class="campo-formulario campo-formulario--largo">
+                <span data-i18n="perfil.campoNome">Nome de usuário</span>
+                <input type="text" id="campoNomeUsuario" maxlength="150" autocomplete="username" required>
+              </label>
+
+              <label class="campo-formulario campo-formulario--largo">
+                <span data-i18n="perfil.campoSenha">Senha</span>
+                <input type="password" id="campoNovaSenha" minlength="6" autocomplete="new-password" placeholder="••••••••">
+                <span class="campo-formulario__dica" data-i18n="perfil.dicaSenha">A senha deve ter no mínimo 6 caracteres.</span>
+              </label>
+
+              <label class="campo-formulario campo-formulario--largo">
+                <span data-i18n="perfil.campoIdioma">Idioma</span>
+                <select id="campoIdioma">
+                  <option value="pt-BR" data-i18n="perfil.idiomaOpcaoPortugues">Português</option>
+                  <option value="en-US" data-i18n="perfil.idiomaOpcaoIngles">English</option>
+                  <option value="es-ES" data-i18n="perfil.idiomaOpcaoEspanhol">Español</option>
+                </select>
+              </label>
+            </div>
+
+            <p class="cartao--perfil__mensagem" id="mensagemPerfil" role="alert" hidden></p>
+
+            <div class="cartao--perfil__acoes">
+              <button type="submit" class="botao-primario" id="botaoSalvarPerfil" data-i18n="perfil.botaoSalvar">Salvar alterações</button>
+            </div>
+          </form>
+        </section>
+      </div>
+    </section>
+
+    <section class="pagina" id="paginaMovimentacao" hidden>
+      <header class="cabecalho-pagina">
+        <h1 data-i18n="movimentacao.titulo">Movimentação de estoque</h1>
+        <p data-i18n="movimentacao.subtitulo">Registre entradas e saídas bipando o código de barras ou digitando manualmente</p>
+      </header>
+
+      <div class="grade-painel">
+        <section class="cartao cartao--movimentacao">
+          <h2 class="cartao__titulo" data-i18n="movimentacao.cartaoTitulo">Nova movimentação</h2>
+          <p class="cartao__subtitulo" data-i18n="movimentacao.cartaoSubtitulo">O mesmo campo aceita tanto o leitor de código de barras quanto a digitação manual</p>
+
+          <label class="campo-formulario campo-formulario--largo">
+            <span data-i18n="movimentacao.campoCodigo">Código do produto</span>
+            <input type="text" id="campoCodigoMovimentacao" maxlength="100" autocomplete="off" placeholder="Bipe ou digite o código e pressione Enter" data-i18n-placeholder="movimentacao.placeholderCodigo">
+          </label>
+
+          <p class="movimentacao__produto-encontrado" id="produtoEncontradoMovimentacao" hidden></p>
+
+          <div class="cartao--perfil__grade">
+            <label class="campo-formulario">
+              <span data-i18n="movimentacao.campoQuantidade">Quantidade</span>
+              <input type="number" id="campoQuantidadeMovimentacao" min="1" step="1" inputmode="numeric">
+            </label>
+
+            <label class="campo-formulario">
+              <span data-i18n="movimentacao.campoTipo">Tipo</span>
+              <select id="seletorTipoMovimentacao">
+                <option value="ENTRADA" data-i18n="movimentacao.tipoEntrada">Entrada (compra)</option>
+                <option value="SAIDA" data-i18n="movimentacao.tipoSaida">Saída (venda)</option>
+              </select>
+            </label>
+          </div>
+
+          <p class="cartao--perfil__mensagem" id="mensagemMovimentacao" role="alert" hidden></p>
+
+          <div class="cartao--perfil__acoes">
+            <button type="button" class="botao-primario" id="botaoConfirmarMovimentacao" data-i18n="movimentacao.botaoConfirmar">Confirmar movimentação</button>
+          </div>
+        </section>
+
+        <section class="cartao cartao--movimentacao" id="cartaoHistoricoMovimentacao">
+          <h2 class="cartao__titulo" data-i18n="movimentacao.historico.cartaoTitulo">Histórico de movimentações</h2>
+          <p class="cartao__subtitulo" data-i18n="movimentacao.historico.cartaoSubtitulo">Todas as entradas e saídas registradas, mais recentes primeiro</p>
+
+          <table class="tabela-historico-movimentacao">
+            <thead>
+              <tr>
+                <th data-i18n="movimentacao.historico.colunaProduto">Produto</th>
+                <th data-i18n="movimentacao.historico.colunaData">Data</th>
+                <th data-i18n="movimentacao.historico.colunaTipo">Tipo</th>
+                <th data-i18n="movimentacao.historico.colunaQuantidade">Quantidade</th>
+              </tr>
+            </thead>
+            <tbody id="corpoHistoricoMovimentacao"></tbody>
+          </table>
+        </section>
+      </div>
+    </section>
+  </main>
+
+  <div class="sobreposicao-modal" id="sobreposicaoModalCadastro" hidden>
+    <form class="modal-cadastro" id="modalCadastroProduto" role="dialog" aria-modal="true" aria-labelledby="tituloModalCadastro" novalidate>
+      <button type="button" class="modal-cadastro__fechar" id="botaoFecharModalCadastro" aria-label="Fechar formulário de cadastro" data-i18n-aria-label="cadastro.fecharAria">×</button>
+
+      <h2 class="modal-cadastro__titulo" id="tituloModalCadastro" data-i18n="cadastro.tituloModal">Cadastrar produto</h2>
+
+      <div class="modal-cadastro__grade">
+        <label class="campo-formulario campo-formulario--largo">
+          <span data-i18n="cadastro.campoMarca">Marca do produto</span>
+          <input type="text" id="campoMarca" maxlength="300" autocomplete="off">
+        </label>
+
+        <label class="campo-formulario campo-formulario--largo">
+          <span data-i18n="cadastro.campoNome">Nome do produto</span>
+          <input type="text" id="campoNomeProduto" maxlength="300" autocomplete="off" required>
+        </label>
+
+        <label class="campo-formulario">
+          <span data-i18n="cadastro.campoQuantidade">Quantidade</span>
+          <input type="number" id="campoQuantidade" min="0" step="1" inputmode="numeric" required>
+        </label>
+
+        <label class="campo-formulario">
+          <span data-i18n="cadastro.campoCodigo">Código</span>
+          <input type="text" id="campoCodigo" maxlength="100" autocomplete="off" required>
+        </label>
+
+        <label class="campo-formulario">
+          <span data-i18n="cadastro.campoData">Data</span>
+          <input type="text" id="campoData" placeholder="dd/mm/aaaa" maxlength="10" autocomplete="off">
+          <span class="campo-formulario__dica" data-i18n="cadastro.dicaData">Em branco = data de hoje</span>
+        </label>
+
+        <label class="campo-formulario">
+          <span data-i18n="cadastro.campoTipo">Tipo</span>
+          <input type="text" id="campoTipo" maxlength="100" autocomplete="off" required>
+        </label>
+
+        <label class="campo-formulario campo-formulario--largo">
+          <span data-i18n="cadastro.campoFornecedor">Fornecedor</span>
+          <input type="text" id="campoFornecedor" maxlength="300" autocomplete="off">
+        </label>
+
+        <label class="campo-formulario">
+          <span data-i18n="cadastro.campoUnidade">Unidade de medida</span>
+          <select id="campoUnidadeMedida">
+            <option value="un">un</option>
+            <option value="l">l</option>
+            <option value="ml">ml</option>
+            <option value="kg">kg</option>
+            <option value="g">g</option>
+            <option value="m">m</option>
+            <option value="cm">cm</option>
+            <option value="cx">cx</option>
+            <option value="pct">pct</option>
+          </select>
+        </label>
+
+        <label class="campo-formulario" id="containerPrecoCusto">
+          <span data-i18n="cadastro.campoPrecoCusto">Preço de custo de cada unidade (R$)</span>
+          <input type="text" id="campoPrecoCusto" placeholder="ex.: 19.90" inputmode="decimal" autocomplete="off" data-i18n-placeholder="cadastro.placeholderPrecoCusto">
+        </label>
+
+        <label class="campo-formulario">
+          <span data-i18n="cadastro.campoPrecoVenda">Preço de venda de cada unidade (R$)</span>
+          <input type="text" id="campoPrecoVenda" placeholder="ex.: 29.90" inputmode="decimal" autocomplete="off" data-i18n-placeholder="cadastro.placeholderPrecoVenda">
+        </label>
+
+        <label class="campo-formulario">
+          <span data-i18n="cadastro.campoEstoqueMinimo">Estoque mínimo</span>
+          <input type="number" id="campoEstoqueMinimo" min="0" step="1" inputmode="numeric" placeholder="opcional" data-i18n-placeholder="cadastro.placeholderOpcional">
+          <span class="campo-formulario__dica" data-i18n="cadastro.dicaEstoqueMinimo">Em branco = sem alerta de estoque crítico para este produto</span>
+        </label>
+
+        <label class="campo-formulario">
+          <span data-i18n="cadastro.campoEstoqueMaximo">Estoque máximo</span>
+          <input type="number" id="campoEstoqueMaximo" min="0" step="1" inputmode="numeric" placeholder="opcional" data-i18n-placeholder="cadastro.placeholderOpcional">
+          <span class="campo-formulario__dica" data-i18n="cadastro.dicaEstoqueMaximo">Em branco = sem alerta de superlotação para este produto</span>
+        </label>
+      </div>
+
+      <p class="modal-cadastro__mensagem" id="mensagemModalCadastro" role="alert" hidden></p>
+
+      <div class="modal-cadastro__acoes">
+        <button type="submit" class="modal-cadastro__salvar" id="botaoSalvarCadastro" data-i18n="cadastro.botaoSalvar">SALVAR</button>
+      </div>
+    </form>
+  </div>
+
+  <div class="sobreposicao-modal" id="sobreposicaoPrivilegios" hidden>
+    <form class="modal-cadastro" id="modalPrivilegios" role="dialog" aria-modal="true" aria-labelledby="tituloModalPrivilegios" novalidate>
+      <button type="button" class="modal-cadastro__fechar" id="botaoFecharModalPrivilegios" aria-label="Fechar" data-i18n-aria-label="privilegios.fecharAria">×</button>
+
+      <h2 class="modal-cadastro__titulo" id="tituloModalPrivilegios" data-i18n="privilegios.titulo">Privilégios de usuário</h2>
+      <p class="cartao-auth__instrucao" data-i18n="privilegios.instrucao">Promover, rebaixar ou excluir uma conta exige a senha de privilégios do servidor - diferente da senha de login de qualquer pessoa.</p>
+
+      <div class="modal-cadastro__grade">
+        <label class="campo-formulario campo-formulario--largo">
+          <span data-i18n="privilegios.campoUsuario">Conta</span>
+          <select id="campoUsuarioPrivilegios" required></select>
+        </label>
+
+        <label class="campo-formulario campo-formulario--largo">
+          <span data-i18n="privilegios.campoNivel">Nível</span>
+          <select id="campoNivelPrivilegios" required>
+            <option value="funcionario" data-i18n="privilegios.opcaoFuncionario">Funcionário</option>
+            <option value="admin" data-i18n="privilegios.opcaoAdmin">Administrador</option>
+          </select>
+        </label>
+
+        <label class="campo-formulario campo-formulario--largo">
+          <span data-i18n="privilegios.campoSenha">Senha de privilégios</span>
+          <input type="password" id="campoSenhaPrivilegios" autocomplete="off" required>
+        </label>
+      </div>
+
+      <p class="modal-cadastro__mensagem" id="mensagemModalPrivilegios" role="alert" hidden></p>
+
+      <div class="modal-cadastro__acoes modal-cadastro__acoes--entre">
+        <button type="button" class="modal-cadastro__excluir" id="botaoExcluirContaPrivilegios" data-i18n="privilegios.botaoExcluirConta">Excluir esta conta</button>
+        <button type="submit" class="modal-cadastro__salvar" id="botaoConfirmarPrivilegios" data-i18n="privilegios.botaoConfirmar">CONFIRMAR</button>
+      </div>
+    </form>
+  </div>
+
+  <div class="sobreposicao-modal" id="sobreposicaoPlanilha" hidden>
+    <div class="painel-planilha" id="painelPlanilha" role="dialog" aria-modal="true" aria-labelledby="tituloPlanilha">
+      <div class="painel-planilha__cabecalho">
+        <div>
+          <h2 class="painel-planilha__titulo" id="tituloPlanilha" data-i18n="planilha.titulo">Planilha de produtos</h2>
+          <p class="painel-planilha__contagem" id="planilhaContagem"></p>
+          <p class="cartao--perfil__mensagem" id="mensagemPlanilha" role="alert" hidden></p>
+        </div>
+        <div class="painel-planilha__botoes-cabecalho">
+          <button type="button" class="painel-planilha__tela-cheia" id="botaoTelaCheiaPlanilha" aria-label="Expandir para tela cheia" aria-pressed="false" data-i18n-aria-label="planilha.telaCheiaAria">⤢</button>
+          <button type="button" class="painel-planilha__fechar" id="botaoFecharPlanilha" aria-label="Fechar planilha" data-i18n-aria-label="planilha.fecharAria">×</button>
+        </div>
+      </div>
+
+      <div class="painel-planilha__barra">
+        <input type="search" id="planilhaBusca" class="painel-planilha__busca" placeholder="Buscar por nome, código, marca..." autocomplete="off" data-i18n-placeholder="planilha.placeholderBusca">
+        <button type="button" class="botao-secundario" id="botaoAbrirPrivilegios" data-i18n="privilegios.botaoAbrir">Privilégios</button>
+        <button type="button" class="botao-secundario" id="botaoExportarPlanilhaCsv" data-i18n="planilha.botaoExportar">Exportar CSV</button>
+      </div>
+
+      <div class="painel-planilha__tabela-scroll">
+        <table class="tabela-planilha" id="tabelaPlanilha">
+          <thead>
+            <tr id="cabecalhoTabelaPlanilha"></tr>
+          </thead>
+          <tbody id="corpoTabelaPlanilha"></tbody>
+        </table>
+      </div>
+
+      <div class="painel-planilha__paginacao">
+        <button type="button" class="botao-secundario" id="botaoPaginaAnterior" data-i18n="planilha.paginaAnterior">‹ Anterior</button>
+        <span id="planilhaIndicadorPagina" aria-live="polite"></span>
+        <button type="button" class="botao-secundario" id="botaoProximaPagina" data-i18n="planilha.proximaPagina">Próxima ›</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="api.js"></script>
+  <script src="autenticacao.js"></script>
+  <script src="i18n.js"></script>
+  <script src="painel.js"></script>
+  <script src="cadastro.js"></script>
+  <script src="movimentacao.js"></script>
+  <script src="planilha.js"></script>
+  <script src="privilegios.js"></script>
+  <script src="perfil.js"></script>
+
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
